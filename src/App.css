@@ -29,6 +29,10 @@ html, body, #root, .wrapper {
   justify-content: flex-end;
 }
 
+.headerContainer button {
+  margin-left: 16px;
+}
+
 #rssEmailPreviewIFrame {
   flex: 1;
 }

@@ -1,5 +1,6 @@
 import './App.css';
 import React, { useState } from 'react'
+import {timeout} from "q";
 
 const BACKEND_URL = "http://localhost:8080"
 
@@ -16,6 +17,7 @@ function App() {
   const [rssUrls, setRssUrls] = useState([])
   const [rssUrl, setRssUrl] = useState("")
   const [email, setEmail] = useState("")
+  const [statusText, setStatusText] = useState("")
 
   const onClickSave = () => {
     fetch(SAVE_EMAIL_RSS_EMAILS, {
@@ -27,7 +29,8 @@ function App() {
         email,
         rssUrls
       })
-    })
+    }).then(() => setStatus("Changes were saved successfully"))
+      .catch(() => setStatus("Failed to save changes"))
   }
 
   const onClickPreview = () => {
@@ -36,11 +39,20 @@ function App() {
       .then(emailHtmlContent => {
         setEmailHtmlContent(emailHtmlContent)
       })
+      .catch(() => setStatus("Failed to get email preview"))
+
   }
 
   const onClickSend = () => {
     fetch(SEND_EMAIL + email)
+      .then(() => setStatus("Email was sent successfully"))
+      .catch(() => setStatus("Failed to send email"))
   }
+
+  const setStatus = (message) => {
+    setStatusText(message)
+  }
+
 
   const onClickAddRssUrl = () => {
     rssUrls.push(rssUrl)
@@ -59,6 +71,7 @@ function App() {
   return (
     <div className="wrapper">
       <div className="headerContainer">
+        <div>{statusText}</div>
         <button onClick={onClickSave}>Save</button>
         <button onClick={onClickPreview}>Preview</button>
         <button onClick={onClickSend}>Send</button>
